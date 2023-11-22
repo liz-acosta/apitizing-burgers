@@ -212,7 +212,6 @@ tags_metadata = [
     },
 ]
 
-
 def convert_snake_case_to_camel_case(string: str) -> str:
     """Convert snake case to camel case"""
 
@@ -227,15 +226,19 @@ def custom_generate_unique_id_function(route: APIRoute) -> str:
 
 
 app = FastAPI(
-    servers=[
-        {"url": "http://127.0.0.1:8000", "description": "Local server"},
-    ],
-    summary="A simple API to manage burgers and orders",
-    description="This API is used to manage burgers and orders in a restaurant",
-    version="0.1.0",
     title="APItizing Burgers API",
-    openapi_tags=tags_metadata,
+    version="0.1.0",
+    # TODO: Uncomment the lines below
+    # servers=[
+    #     {"url": "http://127.0.0.1:8000", "description": "Local server"},
+    # ],
+    # TODO: Uncomment the lines below
+    # summary="A simple API to manage burgers and orders",
+    # description="This API is used to manage burgers and orders in a restaurant",
+    # TODO: Uncomment the line below
     generate_unique_id_function=custom_generate_unique_id_function,
+    # TODO: Uncomment the line below
+    # openapi_tags=tags_metadata,
 )
 
 # Simulate in-memory databases
@@ -243,11 +246,30 @@ burgers_db = []
 orders_db = []
 
 
+@app.put(
+    "/order/{order_id}",
+    response_model=OrderOutput,
+    responses={404: OPENAPI_RESPONSE_ORDER_NOT_FOUND},
+    # TODO: Uncomment the line below
+    # tags=["order"],
+)
+def update_order(order_id: Annotated[int, Path(title="Order ID")], order: OrderUpdate):
+    """Update an order"""
+
+    for i, order_data in enumerate(orders_db):
+        if order_data.id == order_id:
+            updated_order = order_data.dict()
+            updated_order.update(order.dict(exclude_unset=True))
+            orders_db[i] = OrderData(**updated_order)
+            return OrderOutput(**orders_db[i].dict())
+    return response_order_not_found(order_id)
+
 @app.post(
     "/burger/",
     response_model=BurgerOutput,
     status_code=status.HTTP_201_CREATED,
-    tags=["burger"],
+    # TODO: Uncomment the line below
+    # tags=["burger"],
 )
 def create_burger(burger: BurgerCreate):
     """Create a burger"""
@@ -264,22 +286,24 @@ def create_burger(burger: BurgerCreate):
 @app.get(
     "/burger/",
     response_model=List[BurgerOutput],
-    tags=["burger"],
-    openapi_extra={
-        "x-speakeasy-retries": {
-            "strategy": "backoff",
-            "backoff": {
-                "initialInterval": 500,
-                "maxInterval": 60000,
-                "maxElapsedTime": 3600000,
-                "exponent": 1.5,
-            },
-            "statusCodes": [
-                "5XX",
-            ],
-            "retryConnectionErrors": True,
-        }
-    },
+    # TODO: Uncomment the line below
+    # tags=["burger"],
+    # TODO: Uncomment the lines below
+    # openapi_extra={
+    #     "x-speakeasy-retries": {
+    #         "strategy": "backoff",
+    #         "backoff": {
+    #             "initialInterval": 500,
+    #             "maxInterval": 60000,
+    #             "maxElapsedTime": 3600000,
+    #             "exponent": 1.5,
+    #         },
+    #         "statusCodes": [
+    #             "5XX",
+    #         ],
+    #         "retryConnectionErrors": True,
+    #     }
+    # },
 )
 def list_burgers():
     """List all burgers"""
@@ -291,7 +315,8 @@ def list_burgers():
     "/burger/{burger_id}",
     response_model=BurgerOutput,
     responses={404: OPENAPI_RESPONSE_BURGER_NOT_FOUND},
-    tags=["burger"],
+    # TODO: Uncomment the line below
+    # tags=["burger"],
 )
 def read_burger(burger_id: Annotated[int, Path(title="Burger ID")]):
     """Read a burger"""
@@ -306,7 +331,8 @@ def read_burger(burger_id: Annotated[int, Path(title="Burger ID")]):
     "/burger/{burger_id}",
     response_model=BurgerOutput,
     responses={404: OPENAPI_RESPONSE_BURGER_NOT_FOUND},
-    tags=["burger"],
+    # TODO: Uncomment the line below
+    # tags=["burger"],
 )
 def update_burger(burger_id: int, burger: BurgerUpdate):
     """Update a burger"""
@@ -326,7 +352,8 @@ def update_burger(burger_id: int, burger: BurgerUpdate):
         200: {"model": ResponseMessage, "description": "Burger deleted"},
         404: OPENAPI_RESPONSE_BURGER_NOT_FOUND,
     },
-    tags=["burger"],
+    # TODO: Uncomment the line below
+    # tags=["burger"],
 )
 def delete_burger(burger_id: Annotated[int, Path(title="Burger ID")]):
     """Delete a burger"""
@@ -346,7 +373,8 @@ def delete_burger(burger_id: Annotated[int, Path(title="Burger ID")]):
     "/order/",
     response_model=OrderOutput,
     status_code=status.HTTP_201_CREATED,
-    tags=["order"],
+    # TODO: Uncomment the line below
+    # tags=["order"],
 )
 def create_order(order: OrderCreate):
     """Create an order"""
@@ -362,7 +390,12 @@ def create_order(order: OrderCreate):
     return OrderOutput(**order_data.dict())
 
 
-@app.get("/order/", response_model=List[OrderOutput], tags=["order"])
+@app.get(
+    "/order/",
+    response_model=List[OrderOutput],
+    # TODO: Uncomment the line below
+    # tags=["order"]
+    )
 def list_orders():
     """List all orders"""
 
@@ -373,7 +406,8 @@ def list_orders():
     "/order/{order_id}",
     response_model=OrderOutput,
     responses={404: OPENAPI_RESPONSE_ORDER_NOT_FOUND},
-    tags=["order"],
+    # TODO: Uncomment the line below
+    # tags=["order"],
 )
 def read_order(order_id: Annotated[int, Path(title="Order ID")]):
     """Read an order"""
@@ -383,37 +417,6 @@ def read_order(order_id: Annotated[int, Path(title="Order ID")]):
             return OrderOutput(**order.dict())
     return response_order_not_found(order_id)
 
-
-@app.put(
-    "/order/{order_id}",
-    response_model=OrderOutput,
-    responses={404: OPENAPI_RESPONSE_ORDER_NOT_FOUND},
-    tags=["order"],
-)
-def update_order(order_id: Annotated[int, Path(title="Order ID")], order: OrderUpdate):
-    """Update an order"""
-
-    for i, order_data in enumerate(orders_db):
-        if order_data.id == order_id:
-            updated_order = order_data.dict()
-            updated_order.update(order.dict(exclude_unset=True))
-            orders_db[i] = OrderData(**updated_order)
-            return OrderOutput(**orders_db[i].dict())
-    return response_order_not_found(order_id)
-
-
-@app.webhooks.post(
-    "order-status-changed",
-    operation_id="webhookOrderStatusChanged",
-)
-def webhook_order_status_changed(body: OrderOutput):  # pylint: disable=unused-argument
-    """
-    When an order status is changed, this webhook will be triggered.
-
-    The server will send a `POST` request with the order details to the webhook URL.
-    """
-
-
 def custom_openapi():
     """Customize OpenAPI Output"""
 
@@ -421,29 +424,38 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title=app.title,
         version=app.version,
-        summary=app.summary,
-        description=app.description,
-        servers=app.servers,
+        title=app.title,
         routes=app.routes,
-        tags=app.openapi_tags,
-        webhooks=app.webhooks.routes,
+        # TODO: Uncomment the line below
+        # servers=app.servers,
+        # TODO: Uncomment the lines below
+        # summary=app.summary,
+        description=app.description,
+        # TODO: Uncomment the line below
+        # tags=app.openapi_tags,
     )
 
-    openapi_schema["x-speakeasy-retries"] = {
-        "strategy": "backoff",
-        "backoff": {
-            "initialInterval": 500,
-            "maxInterval": 60000,
-            "maxElapsedTime": 3600000,
-            "exponent": 1.5,
-        },
-        "statusCodes": [
-            "5XX",
-        ],
-        "retryConnectionErrors": True,
-    }
+    # TODO: Uncomment the lines below
+    # openapi_schema["x-speakeasy-retries"] = {
+    #     "strategy": "backoff",
+    #     "backoff": {
+    #         "initialInterval": 500,
+    #         "maxInterval": 60000,
+    #         "maxElapsedTime": 3600000,
+    #         "exponent": 1.5,
+    #     },
+    #     "statusCodes": [
+    #         "5XX",
+    #     ],
+    #     "retryConnectionErrors": True,
+    # }
+
+    # TODO: Uncomment the lines below
+    # openapi_schema["x-speakeasy-name-override"] = [{
+    #     "operationId": "^read.*",
+    #     "methodNameOverride": "fetch",
+    # }]
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
