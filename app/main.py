@@ -236,7 +236,7 @@ app = FastAPI(
     # summary="A simple API to manage burgers and orders",
     # description="This API is used to manage burgers and orders in a restaurant",
     # TODO: Uncomment the line below
-    generate_unique_id_function=custom_generate_unique_id_function,
+    # generate_unique_id_function=custom_generate_unique_id_function,
     # TODO: Uncomment the line below
     # openapi_tags=tags_metadata,
 )
