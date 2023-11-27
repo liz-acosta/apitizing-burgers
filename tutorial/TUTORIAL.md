@@ -226,9 +226,24 @@ Which is how Speakeasy translates the `servers` key in the OpenAPI spec:
     }
   ],
 ```
+
+You should also notice this line in your new SDK:
+```
+# sdk.py
+
+headers['user-agent'] = self.sdk_configuration.user_agent
+```
+Which references this code in `sdkconfiguration.py`:
+```
+# sdkconfiguration.py
+
+user_agent: str = 'speakeasy-sdk/python 0.0.1 2.202.2 0.1.0 openapi'
+```
+This means that your server logs will include the FastAPI App version along with other helpful details about your SDK that you can use in debugging and auditing.
+
 In `sdk/src/sdk/sdk.py` you can find the methods your new SDK offers and in `sdk/src/sdk/models/` you can the components and operations used in those methods. You can cross-reference the code with your OpenAPI spec to see how the spec directs the SDK creation. To learn more about the OpenAPI Specification, please refer to the documentation [here](https://swagger.io/specification/).
 
-## Enhancing Your SDK with Customizations
+## Enhancing Your SDK With Customizations
 
  With the hardest parts of SDK creation handled by Speakeasy, you are free to focus on enhancing the developer experience.
 
@@ -631,10 +646,16 @@ Speakeasy supports a suite of SDK customizations. To learn more about how to cus
 
 To learn more about integrating Speakeasy with FastAPI -- such as adding security, additional responses to routes, and webhooks -- please refer to the documentation [here](https://www.speakeasyapi.dev/docs/api-frameworks/fastapi).
 
-## But That’s Just the Beginning …
+## But That’s Just the Beginning ...
 
 Speakeasy can not only create your SDKs, we can manage them too. With a Speakeasy managed SDK, you can focus your engineering resources on product development. Speakeasy helps you deliver value to your customers quickly by providing the SDKs that enable developers to seamlessly integrate your product.  
 
 All you need is an OpenAPI spec. Let Speakeasy do the rest.
 
-To learn more about Speakeasy, check out our documentation [here](https://www.speakeasyapi.dev/docs). To speak with someone on the team, get in touch with us [here](https://www.speakeasyapi.dev/contact).
+To learn more about Speakeasy, check out our documentation [here](https://www.speakeasyapi.dev/docs) or join our community [here](https://speakeasy-dev.slack.com/join/shared_invite/zt-1cwb3flxz-lS5SyZxAsF_3NOq5xc8Cjw#/shared-invite/email). To speak with someone on the team, get in touch with us [here](https://www.speakeasyapi.dev/contact).
+
+## ... And Even If You _Don't_ End Up Using Speakeasy
+
+We hope this tutorial helped deepen your understanding of FastAPI and OpenAPI and where SDKs can fit into a robust developer experience.
+
+Happy coding!
