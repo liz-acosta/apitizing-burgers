@@ -293,7 +293,7 @@ def create_burger(burger: BurgerCreate):
     #     "x-speakeasy-retries": {
     #         "strategy": "backoff",
     #         "backoff": {
-    #             "initialInterval": 500,
+    #             "initialInterval": 600,
     #             "maxInterval": 60000,
     #             "maxElapsedTime": 3600000,
     #             "exponent": 1.5,
@@ -431,7 +431,7 @@ def custom_openapi():
         # servers=app.servers,
         # TODO: Uncomment the lines below
         # summary=app.summary,
-        description=app.description,
+        # description=app.description,
         # TODO: Uncomment the line below
         # tags=app.openapi_tags,
     )
